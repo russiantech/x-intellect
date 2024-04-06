@@ -1,1 +1,1 @@
-# x-intellecrt
+# x-intellect
