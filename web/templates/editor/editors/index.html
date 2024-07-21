@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en" data-footer="true">
+<head>
+    <title>Advanced Courses</title> 
+    {% include('incs/metas.html') %}
+    <link rel="stylesheet" href="{{url_for('static', filename='font/CS-Interface/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/OverlayScrollbars.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/quill.bubble.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/quill.snow.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/styles.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/main.css')}}">
+    <script src="{{url_for('static', filename='setting/js/base/loader.js')}}"></script>
+</head>
+<body>
+    <div id="root">
+        {% include 'incs/nav.html' %}
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <section class="scroll-section" id="title">
+                            <div class="page-title-container">
+                                <h1 class="mb-0 pb-0 display-4">Editor</h1>
+                                <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
+                                    <ul class="breadcrumb pt-0">
+                                        <li class="breadcrumb-item"><a
+                                                href="Dashboards.Default.html">Home</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><a
+                                                href="Interface.html">Interface</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><a
+                                                href="Interface.Forms.html">Forms</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><a
+                                                href="Interface.Forms.Controls.html">Controls</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </section>
+                        <div>
+                            <div class="card mb-5">
+                                <div class="card-body">
+                                    <p class="mb-0">A modern rich text editor built for compatibility and extensibility.
+                                    </p>
+                                </div>
+                            </div>
+                            <section class="scroll-section" id="quillBubble">
+                                <h2 class="small-title">Quill Bubble</h2>
+                                <div class="card mb-5">
+                                    <div class="card-body">
+                                        <div class="html-editor-bubble sh-19 html-editor" id="quillEditorBubble"></div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="scroll-section" id="quillStandart">
+                                <h2 class="small-title">Quill Standart</h2>
+                                <div class="card mb-5">
+                                    <div class="card-body editor-container">
+                                        <div class="html-editor sh-19" id="quillEditor"></div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="scroll-section" id="filled">
+                                <h2 class="small-title">Filled</h2>
+                                <div class="card mb-5">
+                                    <div class="card-body">
+                                        <div class="filled custom-control-container editor-container">
+                                            <div class="html-editor sh-9" id="quillEditorFilled"></div>
+                                            <i data-acorn-icon="notebook-1"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="scroll-section" id="topLabel">
+                                <h2 class="small-title">Top Label</h2>
+                                <div class="card mb-5">
+                                    <div class="card-body">
+                                        <div class="top-label custom-control-container editor-container">
+                                            <div class="html-editor sh-9" id="quillEditorTopLabel"></div>
+                                            <span>EDITOR</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="scroll-section" id="floatingLabel">
+                                <h2 class="small-title">Floating Label</h2>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="form-floating">
+                                            <div class="html-editor sh-13" id="quillEditorFloatingLabel"></div>
+                                            <label>Editor</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                    <div class="col-md-auto d-none d-lg-block" id="scrollSpyMenu">
+                        <ul class="nav flex-column">
+                            <li>
+                                <a class="nav-link"
+                                    href="#title">
+                                    <i data-acorn-icon="chevron-right"></i>
+                                    <span>Title</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link"
+                                    href="#quillBubble">
+                                    <i data-acorn-icon="chevron-right"></i>
+                                    <span>Quill Bubble</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link"
+                                    href="#quillStandart">
+                                    <i data-acorn-icon="chevron-right"></i>
+                                    <span>Quill Standart</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link"
+                                    href="#filled">
+                                    <i data-acorn-icon="chevron-right"></i>
+                                    <span>Filled</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link"
+                                    href="#topLabel">
+                                    <i data-acorn-icon="chevron-right"></i>
+                                    <span>Top Label</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link"
+                                    href="#floatingLabel">
+                                    <i data-acorn-icon="chevron-right"></i>
+                                    <span>Floating Label</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        {% include('incs/footer.html') %}
+    </div>
+    {% include('incs/settings.html') %}
+    {% include('incs/search.html') %}
+
+    <script src="{{url_for('static', filename='js/vendor/jquery-3.5.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/OverlayScrollbars.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/autoComplete.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/clamp.min.js')}}"></script>
+    <script src="{{url_for('static', filename='icon/acorn-icons.js')}}"></script>
+    <script src="{{url_for('static', filename='icon/acorn-icons-interface.js')}}"></script>
+    <script src="{{url_for('static', filename='js/cs/scrollspy.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/quill.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/quill.active.js')}}"></script>
+    <script src="{{url_for('static', filename='js/base/helpers.js')}}"></script>
+    <script src="{{url_for('static', filename='js/base/globals.js')}}"></script>
+    <script src="{{url_for('static', filename='js/base/nav.js')}}"></script>
+    <script src="{{url_for('static', filename='js/base/search.js')}}"></script>
+    <script src="{{url_for('static', filename='js/base/settings.js')}}"></script>
+    <script src="{{url_for('static', filename='js/forms/controls.editor.js')}}"></script>
+    <script src="{{url_for('static', filename='js/common.js')}}"></script>
+    <script src="{{url_for('static', filename='js/scripts.js')}}"></script>
+</body>
+
+</html>

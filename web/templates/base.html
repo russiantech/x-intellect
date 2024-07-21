@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-footer="true">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %} Russian Developers {% endblock title %}</title>
+    {% include('incs/metas.html') %}
+    {% block specific_page_css %} {% endblock specific_page_css %}
+</head>
+
+<body>
+    <div id="root">
+
+        {% include('incs/nav.html') %}
+
+        {% block content %}
+        <main> </main>
+        {% endblock content %}
+        
+        {% include('incs/footer.html') %}
+    </div>
+
+    {% include('incs/settings.html') %}
+    {% include('incs/search.html') %}
+    
+    {% block specific_page_js %} {% endblock specific_page_js %}
+    {% include('incs/bottom.html') %}
+
+    <script>
+        // ...
+        function set_message_count(n) {
+            $('#message_count').text(n);
+            $('#message_count').css('visibility', n ? 'visible' : 'hidden');
+        }
+
+        // ...
+        {% if (current_user.is_authenticated) %}
+
+        $(function () {
+            var since = 0;
+            setInterval(function () {
+                $.ajax('{{ url_for('auth.notify') }}?since=' + since).done(
+                    function (notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            if (notifications[i].name == 'unread_message_count')
+                                set_message_count(notifications[i].data);
+                            since = notifications[i].timestamp;
+                        }
+                    }
+                );
+            }, 10000);
+        });
+        {% endif %}
+    </script>
+
+<script>
+    $(document).ready(function () {
+        // Make AJAX request to fetch learning progress data
+        $.ajax({
+            url: '/learning_progress',
+            type: 'GET',
+            success: function (response) {
+                var userCourses = response;
+                //console.log('User courses:', userCourses); // Log the contents of userCourses
+
+                var container = $('.scroll-by-count');
+                var courseCount = userCourses.length;
+                container.attr('data-count', courseCount); // Update the data-count attribute with the course count
+
+                // Use map() to generate an array of cloned elements for each course
+                var courseElements = userCourses.map(function (course) {
+                    var clone = container.find('.card').clone();
+                    clone.find('a').attr('href', './learn/' + course.slug);
+                    clone.find('img').attr('src', './static/img/course/' + course.image);
+                    clone.find('.font-heading').text(course.title);
+                    clone.find('.text-muted').text(course.progress + '%');
+                    clone.find('.progress-bar').css('width', course.progress + '%');
+                    return clone;
+                });
+
+                console.log(courseElements);
+                // Append the array of cloned elements to the container
+                //container.empty().append(courseElements);
+                container.html(courseElements);
+                //container.empty().html(courseElements);
+            },
+
+            error: function (xhr, status, error) {
+                console.error('Error fetching learning progress:', error);
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

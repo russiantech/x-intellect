@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" data-footer="true">
+<head>
+    <title>Advanced Courses</title> 
+    {% include('incs/metas.html') %}
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/font/CS-Interface/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/OverlayScrollbars.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/select2.min.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/select2-bootstrap4.min.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/quill.bubble.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/quill.snow.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/tagify.css')}}">
+
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/styles.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='setting/css/main.css')}}">
+    <script src="{{url_for('static', filename='setting/js/base/loader.js')}}"></script>
+</head>
+
+<body>
+    <div id="root">
+    
+   {% include 'incs/nav.html' %}
+
+        <main>
+            <div class="container">
+
+                    <div class="col">
+                        <div class="page-title-container mb-3">
+                            <div class="row">
+                                <div class="col mb-2">
+                                    <h1 class="mb-2 pb-0 display-4" id="title">Courses</h1>
+                                    <div class="text-muted font-heading text-small">
+                                Advanced courses</div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <section class="scroll-section" id="quillStandart">
+                            <h2 class="small-title">Sections</h2>
+                            
+                            <div class="card mb-5">
+                                <div class="card-body">
+                                    <div class="filled custom-control-container editor-container">
+                                        <div class="html-editor sh-9" id="quillEditorFilled"></div>
+                                        <i data-acorn-icon="notebook-1"></i>
+                                    </div>
+                                </div>
+
+                                <div class="card-body editor-container">
+                                    <div class="html-editor sh-19" id="quillEditor"></div> 
+                                </div>
+                            </div>
+                        </section>
+
+
+                        <section class="scroll-section" id="validation">
+                            <h2 class="small-title">Advanced Courses</h2>
+                            <div class="card wizard" id="wizardValidation" style="height: 620px;">
+                                <div class="card-header border-0 pb-0">
+                                    <ul class="nav nav-tabs justify-content-center" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link text-center active done" href="#validationFirst"  role="tab">
+                                                <div style="color: var(--muted);" class="text-small description d-none d-md-block">
+                                                    Course Basics </div>
+                                            </a>
+                                        </li>
+                                        
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link text-center active" role="tab">
+                                                <div class="text-small description d-none d-md-block">
+                                                     Materials</div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link text-center" role="tab">
+                                                <div class="text-small description d-none d-md-block">
+                                                    Course Basics 2</div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link text-center " role="tab">
+                                                <div class="text-small description d-none d-md-block">
+                                                    Chapters</div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link text-center " role="tab">
+                                                <div class="text-small description d-none d-md-block">
+                                                    Sections</div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div class="card-body sh-35">
+
+                                    <div class="tab-content">
+                                        
+                                        <div class="tab-pane fade active show" id="validationSecond" role="tabpanel">
+                                            <div class="text-center mt-5" style="height: 500px;">
+
+                                                <div class="row">
+                                                    <div class="result col-sm-12 card-text text-alternate">.</div>
+                                            <!----       {% include 'incs/alerts.html' %} --->
+                                                  </div>
+
+                                                <form  class="tooltip-end-bottom" name="f2" id="materi">
+                                                    <label class="btn btn-icon btn-icon-start btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                            height="20" viewBox="0 0 20 20" fill="none"
+                                                            stroke="currentColor" stroke-width="1.5"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="acorn-icons acorn-icons-plus undefined">
+                                                            <path d="M10 17 10 3M3 10 17 10"></path>
+                                                        </svg>
+                                                        <span>Add Poster Image</span>
+                                                        <input type="file" name="poster" class="inputs"
+                                                         onchange="uploadFile(this, '#poster')" accept="image/*" hidden />
+                                                    </label> 
+                                                    <div class="col-sm-12 mb-3">
+                                                        <div class="col-sm-12" id="poster"></div>
+                                                    </div>
+                                                    <label class="btn btn-icon btn-icon-start btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                            height="20" viewBox="0 0 20 20" fill="none"
+                                                            stroke="currentColor" stroke-width="1.5"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="acorn-icons acorn-icons-plus undefined">
+                                                            <path d="M10 17 10 3M3 10 17 10"></path>
+                                                        </svg>
+                                                        <span>upload Tutorial Video</span>
+                                                        <input type="file" name="video" class="inputs"
+                                                        onchange="uploadFile(this, '#video')" accept="image/*" hidden />
+                                                    </label>
+                                                    <div class="col-sm-12 mb-3">
+                                                        <div class="col-sm-12" id="video"></div>
+                                                    </div>
+
+                                                    <label class="btn btn-icon btn-icon-start btn-primary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="20"
+                                                            height="20" viewBox="0 0 20 20" fill="none"
+                                                            stroke="currentColor" stroke-width="1.5"
+                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                            class="acorn-icons acorn-icons-plus undefined">
+                                                            <path d="M10 17 10 3M3 10 17 10"></path>
+                                                        </svg>
+                                                        <span>Materials(pdfs/illustrations)</span>
+                                                        <input type="file" name="material" class="inputs"
+                                                        onchange="uploadFile(this, '#material')" accept="image/*" hidden />
+                                                    </label>
+                                                    <div class="col-sm-12 mb-3">
+                                                        <div class="col-sm-12" id="material"></div>
+                                                    </div>
+
+                                                    <div class="card-footer text-center border-0 mt-3 pt-1" style="margin-top: 10px;">
+                                                        <button class="btn btn-icon btn-icon-start btn-outline-primary btn-prev"
+                                                            type="button">
+                                                            <i data-acorn-icon="chevron-left"></i>
+                                                            <span>Back</span>
+                                                        </button>
+                                                        <button type="submit" id="submit" class="btn btn-icon btn-icon-end btn-outline-primary btn-next">
+                                                
+                                                            <span>Next</span>
+                                                            <i data-acorn-icon="chevron-right"></i>
+                                                        </button>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                         
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        
+                            <section class="scroll-section" id="quillStandart">
+                                <h2 class="small-title">Course Info</h2>
+                                <div class="card-body">
+                                    <form method="post" action="" enctype="multipart/form-data" class="d-flex flex-column mb-4">
+    
+                                        <div class="mb-3 filled w-100 d-flex flex-column">
+                                            <i data-acorn-icon="tag"></i>
+                                            <input class="form-control" placeholder="Enter Course Title">
+                                        </div>
+                                        <div class="row g-3" >
+                                            <div class="col-md-4" >
+                                                <div class="filled mb-0 w-100 mb-3 col-md-4">
+                                                    <i data-acorn-icon="gender"></i>
+                                                    <select class="select-single-no-search-filled" data-placeholder="Course Category" name="cat">
+                                                        <option value="1" selected>Web Applications</option>
+                                                        <option value="2">Website Design</option>
+                                                        <option value="5">UI/Ux Design</option>
+                                                        <option value="2">Mobile Application</option>
+                                                        <option value="3">Softwares</option>
+                                                        <option value="4">Hacking</option>
+                                                        <option selected value="">...</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="filled mb-0 w-100 mb-3 col-md-4">
+                                                    <i data-acorn-icon="gender"></i>
+                                                    <select class="select-single-no-search-filled" data-placeholder="Course Language" name="cat">
+                                                        <option value="1" selected>English</option>
+                                                        <option value="2">Spanish</option>
+                                                        <option value="3">French</option>
+                                                        <option value="4">Latin</option>
+                                                        <option value="5">Pidgin</option>
+                                                        <option selected value="">...</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="filled mb-0 w-100 mb-3 col-md-4">
+                                                    <i data-acorn-icon="gender"></i>
+                                                    <select class="select-single-no-search-filled" data-placeholder="Course Level" name="cat">
+                                                        <option value="1" selected>Novice</option>
+                                                        <option value="2">Intermediate</option>
+                                                        <option value="3">Advanced</option>
+                                                        <option value="4">Pro</option>
+                                                        <option value="5">Expert</option>
+                                                        <option selected value="">...</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            </div>
+                                            
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                <div class="filled w-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="acorn-icons acorn-icons-loaf undefined"><path d="M18 11C18 16 14.4183 16 10 16C5.58172 16 2 16 2 11C2 7.68629 4 4 10 4C16 4 18 7.68629 18 11Z"></path><path d="M6 10 6 5M14 10 14 5M10 9 10 4"></path></svg>
+                                                <tags class="tagify tagify--noTags tagify--empty" tabindex="-1">
+                                                            <span contenteditable="" data-placeholder="Tags" aria-placeholder="Tags" class="tagify__input" role="textbox" aria-autocomplete="both" aria-multiline="false"></span>
+                                                        </tags>
+                                                        <input id="tagsFilled" placeholder="Tags">
+                                                </div>
+                                                </div>
+                                                </div>
+    
+                                                <div class="row g-3" >
+                                                    <div class="col-md-4" >
+                                                        <div class="mb-3 filled w-100 d-flex flex-column">
+                                                            <i data-acorn-icon="tag"></i>
+                                                            <input class="form-control" type="text" name="author" placeholder="Instructor's Name">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4" >
+                                                        <div class="mb-3 filled w-100 d-flex flex-column">
+                                                            <i data-acorn-icon="tag"></i>
+                                                            <input class="form-control" type="number" name="duration" placeholder="Course Duration(in hours pls)">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="mb-3 filled w-100 d-flex flex-column">
+                                                            <i data-acorn-icon="tag"></i>
+                                                            <input class="form-control" type="number" name="fee" placeholder="Course Fee(in dollars)">
+                                                        </div>
+                                                    </div>
+    
+                                                    </div>
+    
+                                        <div class="mb-3 filled w-100 d-flex flex-column">
+                                            <i data-acorn-icon="email"></i>
+                                            <textarea class="form-control" rows="5" placeholder="Course Introduction" name="intro"></textarea>
+                                        </div>
+                                        
+                                        <div class="card-footer text-center border-0 mt-3 pt-1" style="margin-top: 10px;">
+                                            <button class="btn btn-icon btn-icon-start btn-outline-primary btn-prev" disabled type="button">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="acorn-icons acorn-icons-chevron-left undefined"><path d="M13 16L7.35355 10.3536C7.15829 10.1583 7.15829 9.84171 7.35355 9.64645L13 4"></path></svg>
+                                                <span>Back</span>
+                                            </button>
+                                            <button type="submit" id="submit" class="btn btn-icon btn-icon-end btn-outline-primary btn-next">
+                                    
+                                                <span>Next</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="acorn-icons acorn-icons-chevron-right undefined"><path d="M7 4L12.6464 9.64645C12.8417 9.84171 12.8417 10.1583 12.6464 10.3536L7 16"></path></svg>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </section>
+
+
+                        </div>
+<script>
+
+uploadFile = (input, ouput) => {
+    if(input.files && input.files[0]){
+    var reader = new FileReader();
+        reader.onload = (e) => {
+        var src = e.target.result;
+       $(ouput).html('<img src="'+src+'"/>');
+       $(ouput).find('img').css({'width':'300px', 'height':'80px', 
+       'border-radius':'8px', 'margin-top':'4px', 'margin-bottom':'4px'});
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+    }
+
+uploadFile1 = (input, output) => {
+    if(input.files && input.files[0]){
+        let file = input.target.files[0];
+        let src = URL.createObjectURL(file);
+        $(output).html('<video src="'+src+'" controls autoplay/>Browser of no support for video</video>');
+        $(output).find('video').css({'width':'300px', 'height':'80px','border-radius':'8px', 'margin-top':'4px', 'margin-bottom':'4px'});
+    alert(file + src + output + input );
+    }
+}
+
+</script>
+                        <h2 class="small-title">course Settings</h2>
+                        <div class="card mb-5">
+                            <div class="card-body">
+                                <form class="mb-4">
+                                    <div class="mb-3 filled custom-control-container">
+                                        <i data-acorn-icon="shield"></i>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="securityCheck"
+                                                checked="checked">
+                                            <label class="form-check-label" for="securityCheck">Security
+                                                Warnings</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 filled custom-control-container">
+                                        <i data-acorn-icon="money"></i>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="budgetCheck"
+                                                checked="checked">
+                                            <label class="form-check-label" for="budgetCheck">Over Budget</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 filled custom-control-container">
+                                        <i data-acorn-icon="server"></i>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="quotaCheck" checked="checked">
+                                            <label class="form-check-label" for="quotaCheck">Quota Warnings</label>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3 filled custom-control-container">
+                                        <i data-acorn-icon="bell"></i>
+                                        <div class="form-check form-switch">
+                                            <input type="checkbox" class="form-check-input" id="generalCheck"
+                                                checked="checked">
+                                            <label class="form-check-label" for="generalCheck">General
+                                                Published</label>
+                                        </div>
+                                    </div>
+                                    
+                                <button class="btn btn-primary">Update</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    
+        {% include('incs/footer.html') %}
+    </div>
+    {% include('incs/settings.html') %}
+    {% include('incs/search.html') %}
+ 
+    <script src="{{url_for('static', filename='setting/js/vendor/jquery-3.5.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/vendor/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/vendor/OverlayScrollbars.min.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/vendor/autoComplete.min.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/vendor/clamp.min.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/icon/acorn-icons.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/icon/acorn-icons-interface.js')}}"></script>
+
+    
+    <script src="{{url_for('static', filename='js/cs/scrollspy.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/quill.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/vendor/quill.active.js')}}"></script>
+
+    <script src="{{url_for('static', filename='js/vendor/tagify.min.js')}}"></script>
+
+    <script src="{{url_for('static', filename='setting/icon/acorn-icons-commerce.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/vendor/select2.full.min.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/vendor/singleimageupload.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/base/helpers.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/base/globals.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/base/nav.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/base/search.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/base/settings.js')}}"></script>
+    <script src="{{url_for('static', filename='setting/js/pages/account.settings.js')}}"></script>
+
+    <!---->
+    <script src="{{url_for('static', filename='js/forms/controls.editor.js')}}"></script>
+    <script src="{{url_for('static', filename='js/forms/controls.tag.js')}}"></script>
+
+    <script src="{{url_for('static', filename='setting/js/common.js')}}"></script>
+    <script src="{{url_for('static', filename='js/scripts.js')}}"></script> <!--use-general-script-here-for-consistency-in-UI-->
+</body>
+
+</html>
