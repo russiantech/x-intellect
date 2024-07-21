@@ -38,12 +38,12 @@ load_dotenv()
 from redis import Redis
 redis = Redis.from_url(getenv('redis_url', 'redis://'))
 
-from flask_limiter import Limiter
+""" from flask_limiter import Limiter
 limiter = Limiter(
     storage_uri=getenv('redis_url'),
     key_func=lambda: request.remote_addr,
 )
-
+ """
 from flask_caching import Cache
 from config import Config 
 #cache = Cache()
@@ -107,7 +107,7 @@ def init_ext(app):
     mail.init_app(app)
     moment.init_app(app)
     oauth.init_app(app)
-    limiter.init_app(app)
+    # limiter.init_app(app)
     socketio.init_app(app, manage_session=False, async_mode='threading', cors_allowed_origins="*")
     # socketio.init_app(app)
     #cache.init_app(app, config=app.config['REDIS_CONFIG'])

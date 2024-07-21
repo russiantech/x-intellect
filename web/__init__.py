@@ -30,9 +30,6 @@ def create_app(config_name):
     from web.main.routes import main
     app.register_blueprint(main)
     
-    # from web.editor.routes import editor
-    # app.register_blueprint(editor)
-    
     from web.chatme.routes import chat
     app.register_blueprint(chat)
 
@@ -58,11 +55,6 @@ def create_app(config_name):
 
     from web.apis.x_courses.x_topic import x_topic_bp
     app.register_blueprint(x_topic_bp)
-
-    #For Recommendations | But Could Not Install `surprise` just yet
-    from web.x_recommend.routes import x_recommend_bp
-    app.register_blueprint(x_recommend_bp)
-
     
     from slugify import slugify
     from web.utils import time_ago, user_role, entry
