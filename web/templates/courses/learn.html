@@ -6,9 +6,9 @@
     <head>
         <title>{% block title %} Learn . Russsian Developers {% endblock title %}</title>
         {% include('incs/metas.html') %}
-        {% block specific_page_css %}
+        {% block page_css %}
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/plyr.css')}}">
-        {% endblock specific_page_css %}
+        {% endblock page_css %}
     </head>
 
 <body>
@@ -471,10 +471,10 @@
     <script src="{{url_for('static', filename='js/common.js')}}"></script>
     <script src="{{url_for('static', filename='js/scripts.js')}}"></script>
 
-    {% block specific_page_js %}
+    {% block page_js %}
     <script src="{{ url_for('static', filename='js/vendor/plyr.min.js')}}"></script>
     <script src="{{ url_for('static', filename='js/vendor/misc.player.js')}}"></script>
-    {% endblock specific_page_js %}
+    {% endblock page_js %}
 
 </body>
 </html>

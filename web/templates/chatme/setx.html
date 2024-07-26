@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block title %}Courses . Russian Developers Program {% endblock title %}
-{% block  specific_page_css %} 
+{% block  page_css %} 
 <link rel="stylesheet" href="static/setting/css/vendor/OverlayScrollbars.min.css">
 <link rel="stylesheet" href="static/setting/css/vendor/select2.min.css">
 <link rel="stylesheet" href="static/setting/css/vendor/select2-bootstrap4.min.css">
-{% endblock specific_page_css %}
+{% endblock page_css %}
 
 {% block content %}
         <main>
@@ -137,12 +137,12 @@
             </div>
         </main>
 
-        {% block  specific_page_js %} 
+        {% block  page_js %} 
         <script src="static/setting/icon/acorn-icons-commerce.js"></script>
         <script src="static/setting/js/vendor/select2.full.min.js"></script>
         <script src="static/setting/js/vendor/singleimageupload.js"></script>
         <script src="static/setting/js/pages/account.settings.js"></script>
-        {% endblock specific_page_js %} 
+        {% endblock page_js %} 
         
         
         {% endblock content %}

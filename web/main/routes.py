@@ -15,13 +15,6 @@ from web.extensions import mail
 
 main = Blueprint('main', __name__)
 
-""" # Download 'punkt' resource during app initialization
-nltk.download('punkt', download_dir='path/to/your/nltk_data')
- """
-# import nltk
-# nltk.download('punkt')
-
-#courses -> landing ->
 #@main.route("/"), v->view
 @main.route('/explore')
 @main.route('/welcome/<int:offset>', methods=['post', 'get'])
@@ -322,64 +315,5 @@ def x_insert_topic():
 def x_update_topic():
     return render_template("xcourse/x_update_topic.html")
 
-
-
-import os
-import psycopg2
-
-# Function to execute SQL script against the database
-def execute_sql_script(sql_script):
-    try:
-        # Connect to your PostgreSQL database
-        """ conn = psycopg2.connect(
-            host="localhost",
-            database="russiant",
-            user="root",
-            password=""
-        ) """
-
-        conn = psycopg2.connect(
-            host="dpg-co72lev109ks73816rcg-a",
-            database="intellect",
-            user="techa",
-            password="RLJpQdUmIOvDXBu0oubBWGMGN5auYbtx"
-        )
-        
-        # Create a cursor object
-        cursor = conn.cursor()
-        
-        # Execute the SQL script
-        cursor.execute(sql_script)
-        
-        # Commit the transaction
-        conn.commit()
-        
-        # Close cursor and connection
-        cursor.close()
-        conn.close()
-        
-        return 'SQL script executed successfully'
-    except Exception as e:
-        return f'Error executing SQL script: {str(e)}'
-
-# Route for executing SQL script from a file
-@main.route('/execute_sql', methods=['POST', 'GET'])
-def execute_sql_from_file():
-    try:
-        # Specify the directory where the .sql file is located
-        sql_file_path = './intellect.sql'
-
-        # Check if the file exists
-        if not os.path.exists(sql_file_path):
-            return f'SQL file not found at -> {sql_file_path}'
-
-        # Read the contents of the file
-        with open(sql_file_path, 'r') as sql_file:
-            sql_script = sql_file.read()
-
-        # Execute SQL script against the database
-        return execute_sql_script(sql_script)
-    except Exception as e:
-        return f'Error executing SQL script from file: {str(e)}'
 
 

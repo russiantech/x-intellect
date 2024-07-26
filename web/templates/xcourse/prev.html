@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block title %}Informations . Russian Developers{% endblock title %}
-{% block specific_page_css %}
+{% block page_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/plyr.css')}}" />
-{% endblock specific_page_css %}
+{% endblock page_css %}
 {% block content %}
 <main>
     <div class="container">
@@ -284,7 +284,7 @@
 
 {% endblock content %}
 
-{% block specific_page_js %}
+{% block page_js %}
 
 <script src="{{ url_for('static', filename='js/vendor/plyr.min.js')}}"></script>
 <script src="{{ url_for('static', filename='js/pages/course.detail.js')}}"></script>
@@ -445,4 +445,4 @@ function fetchCourseBySlug(courseSlug) {
 }
 
 </script>
-{% endblock specific_page_js %}
+{% endblock page_js %}

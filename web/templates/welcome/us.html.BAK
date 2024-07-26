@@ -2,7 +2,7 @@
 {% block title %} Us . Russian Developers {% endblock title %}
 
 
-{% block specific_page_css %}
+{% block page_css %}
 <style>
                     
     #support_us_h {
@@ -38,7 +38,7 @@
 <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/select2-bootstrap4.min.css')}}">
 #}
 
-{% endblock specific_page_css %}
+{% endblock page_css %}
 {% block content %}
 
 <main>
@@ -549,7 +549,7 @@
 
 {% endblock content %}
 
-{% block specific_page_js %}
+{% block page_js %}
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -570,4 +570,4 @@
         }
     });
 </script>
-{% endblock specific_page_js %}
+{% endblock page_js %}

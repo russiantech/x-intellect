@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% block title %}Settings . Russian Developers {% endblock title %}
-{% block  specific_page_css %} 
+{% block  page_css %} 
 <script src="{{ url_for('static', filename='css/vendor/quill.bubble.css')}}"></script>
 <script src="{{ url_for('static', filename='css/vendor/quill.snow.css')}}"></script>
-{% endblock specific_page_css %}
+{% endblock page_css %}
 
 {% block content %}
 <main>
@@ -384,11 +384,11 @@
     </div>
 </main>
 
-{% block  specific_page_js %} 
+{% block  page_js %} 
 <script src="{{ url_for('static', filename='js/vendor/quill.min.js')}}"></script>
 <script src="{{ url_for('static', filename='js/vendor/quill.active.js')}}"></script>
 <script src="{{ url_for('static', filename='js/forms/controls.editor.js')}}"></script>
-{% endblock specific_page_js %} 
+{% endblock page_js %} 
 
 
 {% endblock content %}

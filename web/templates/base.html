@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>{% block title %} Russian Developers {% endblock title %}</title>
     {% include('incs/metas.html') %}
-    {% block specific_page_css %} {% endblock specific_page_css %}
+    {% block page_css %} {% endblock page_css %}
 </head>
 
 <body>
@@ -22,7 +22,7 @@
     {% include('incs/settings.html') %}
     {% include('incs/search.html') %}
     
-    {% block specific_page_js %} {% endblock specific_page_js %}
+    {% block page_js %} {% endblock page_js %}
     {% include('incs/bottom.html') %}
 
     <script>
@@ -49,39 +49,42 @@
                 );
             }, 10000);
         });
-        {% endif %}
-    </script>
 
-<script>
+    // load progress if user is logged in
     $(document).ready(function () {
         // Make AJAX request to fetch learning progress data
         $.ajax({
             url: '/learning_progress',
             type: 'GET',
             success: function (response) {
-                var userCourses = response;
-                //console.log('User courses:', userCourses); // Log the contents of userCourses
+                // Log the contents of the response to verify its structure
+                console.log('Response from /learning_progress:', response);
+                
+                // Check if the response is an array
+                if (Array.isArray(response)) {
+                    var userCourses = response;
 
-                var container = $('.scroll-by-count');
-                var courseCount = userCourses.length;
-                container.attr('data-count', courseCount); // Update the data-count attribute with the course count
+                    var container = $('.scroll-by-count');
+                    var courseCount = userCourses.length;
+                    container.attr('data-count', courseCount); // Update the data-count attribute with the course count
 
-                // Use map() to generate an array of cloned elements for each course
-                var courseElements = userCourses.map(function (course) {
-                    var clone = container.find('.card').clone();
-                    clone.find('a').attr('href', './learn/' + course.slug);
-                    clone.find('img').attr('src', './static/img/course/' + course.image);
-                    clone.find('.font-heading').text(course.title);
-                    clone.find('.text-muted').text(course.progress + '%');
-                    clone.find('.progress-bar').css('width', course.progress + '%');
-                    return clone;
-                });
+                    // Use map() to generate an array of cloned elements for each course
+                    var courseElements = userCourses.map(function (course) {
+                        var clone = container.find('.card').first().clone(); // Ensure to clone the first card element
+                        clone.find('a').attr('href', './learn/' + course.slug);
+                        clone.find('img').attr('src', './static/img/course/' + course.image);
+                        clone.find('.font-heading').text(course.title);
+                        clone.find('.text-muted').text(course.progress + '%');
+                        clone.find('.progress-bar').css('width', course.progress + '%');
+                        return clone;
+                    });
 
-                console.log(courseElements);
-                // Append the array of cloned elements to the container
-                //container.empty().append(courseElements);
-                container.html(courseElements);
-                //container.empty().html(courseElements);
+                    // console.log(courseElements);
+                    // Append the array of cloned elements to the container
+                    container.empty().append(courseElements);
+                } else {
+                    console.error('Expected an array but got:', response);
+                }
             },
 
             error: function (xhr, status, error) {
@@ -89,7 +92,9 @@
             }
         });
     });
+    {% endif %}
 
 </script>
+
 </body>
 </html>

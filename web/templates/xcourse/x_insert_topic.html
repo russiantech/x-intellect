@@ -4,13 +4,13 @@
     <head> 
         <title>{% block title %} Topics . Russsian Programers {% endblock title %}</title>
         {% include('incs/metas.html') %}
-        {% block  specific_page_css %} 
+        {% block  page_css %} 
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/plyr.css')}}">
         <!--  -->
         <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/select2.min.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='setting/css/vendor/select2-bootstrap4.min.css')}}">
         <!---->
-        {% endblock specific_page_css %}
+        {% endblock page_css %}
 </head>
 <body>
     <div id="root">
@@ -1175,7 +1175,7 @@
     <!--  -->
     <script src="{{url_for('static', filename='js/plugins/controls.select2.js')}}"></script> 
 
-    {% block  specific_page_js %} 
+    {% block  page_js %} 
     <script>
         $(document).ready( function(){
             // Make AJAX request to fetch categories
@@ -1296,7 +1296,7 @@
 
     </script>
     <script src="{{ url_for('static', filename='js/vendor/plyr.min.js')}}"></script>
-    {% endblock specific_page_js %}
+    {% endblock page_js %}
     
 </body>
 </html>

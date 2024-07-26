@@ -4,9 +4,9 @@
     <head> 
         <title>{% block title %} Chapters . Russsian Developers {% endblock title %}</title>
         {% include('incs/metas.html') %}
-        {% block  specific_page_css %} <!--
+        {% block  page_css %} <!--
         <link rel="stylesheet" href="{{ url_for('static', filename='css/vendor/plyr.css')}}"> -->
-        {% endblock specific_page_css %}
+        {% endblock page_css %}
 
         <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/quill.bubble.css')}}">
         <link rel="stylesheet" href="{{url_for('static', filename='css/vendor/quill.snow.css')}}">
