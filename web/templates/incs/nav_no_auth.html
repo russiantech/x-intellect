@@ -1,6 +1,6 @@
 <div id="nav" class="nav-container d-flex">
     <div class="nav-content d-flex">
-        <div class="logo position-relative"><a href="{{url_for('main.welcome')}}"><div class="img"></div> </a> </div>
+        <div class="logo position-relative"><a href="{{url_for('main.index')}}"><div class="img"></div> </a> </div>
         <div class="language-switch-container">
             <button class="btn btn-empty language-button dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">EN</button>
             <div class="dropdown-menu">
@@ -145,7 +145,7 @@
                 {% endif %}
 
                 <li>
-                    <a href="{{url_for('main.welcome')}}">
+                    <a href="{{url_for('main.index')}}">
                         <i data-acorn-icon="navigate-diagonal" class="icon" data-acorn-size="18"></i>
                         <span class="label">Courses</span>
                         <ul>

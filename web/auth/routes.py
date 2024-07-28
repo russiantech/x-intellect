@@ -11,15 +11,17 @@ from web.auth.forms import (SignupForm, SigninForm, UpdateMeForm, ForgotForm, Re
 
 auth = Blueprint('auth', __name__)
 
+
 @auth.route("/signup", methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
-        return redirect(url_for('main.welcome'))
+        return redirect(url_for('main.index'))
     form = SignupForm()
     if form.validate_on_submit():
-        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, email=form.email.data, password=hashed_password, 
-                    ip =ip_adrs.user_ip())
+        # hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        # user = User(username=form.username.data, email=form.email.data, password=hashed_password,  ip =ip_adrs.user_ip())
+        user = User(username=form.username.data, email=form.email.data,  ip =ip_adrs.user_ip())
+        user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         email.verify_email(user) if user else flash('Undefined User.', 'info')
@@ -31,11 +33,16 @@ def signup():
 @auth.route("/signin", methods=['GET', 'POST'])
 def signin():
     if current_user.is_authenticated:
-        return redirect(url_for('main.welcome'))
+        return redirect(url_for('main.index'))
     form = SigninForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and bcrypt.check_password_hash(user.password, form.password.data):
+        if user and user.check_password(form.password.data):
+        # if user and bcrypt.check_password_hash(user.password, form.password.data):
+            # Re-hash using scrypt if the password was hashed with bcrypt
+            if user.password.startswith("$2b$"):  # bcrypt hash prefix
+                user.set_password(form.password.data)
+                db.session.commit()
             login_user(user, remember=form.remember.data)
             current_user.online = True
             current_user.last_seen = datetime.utcnow()
@@ -51,10 +58,10 @@ def signin():
 @auth.route("/signout")
 @login_required
 def signout():
-    logout_user()
     current_user.online = False
+    logout_user()
     db.session.commit()
-    return redirect(url_for('main.welcome'))
+    return redirect(url_for('main.index'))
 
 @auth.route("/<string:usrname>/update", methods=['GET', 'POST'])
 #@auth.route("/update/<string:usrname>", methods=['GET', 'POST'])
@@ -79,6 +86,7 @@ def update(usrname):
             db.session.commit()
             flash('Your Account Has Been Updated!', 'success')
             return redirect(url_for('main.user'))
+            
         elif request.method == 'GET':
             form.image.data = user.image
             form.name.data = user.name
@@ -97,7 +105,7 @@ def update(usrname):
 @auth.route("/forgot", methods=['GET', 'POST'])
 def forgot():
     if current_user.is_authenticated:
-        return redirect(url_for('main.welcome'))
+        return redirect(url_for('main.index'))
     form = ForgotForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -117,46 +125,92 @@ def unverified():
         flash('Verication Emails Sent Again, Check You Mail Box', 'info')
     return render_template('auth/unverified.html')
 
-#->for both verify/reset tokens
-@auth.route("/confirm/<token>", methods=['GET', 'POST'])
-def confirm(token):
-    print(current_user.generate_token(type='verify'))
+#->for both verify/reset/forgot etc tokens
+@auth.route("/confirm/<token>/<email>", methods=['GET', 'POST'])
+def confirm(token: str, email: str):
+
     if current_user.is_authenticated:
-        print(current_user.generate_token(type='verify')) #generate-token
-        return redirect(url_for('main.welcome'))
+        return redirect(url_for('main.index'))
     
-    conf = User.verify_token(token) #verify
-
-    if not conf:
+    # Ensure token_type is present
+    if not token or not email:
+        print('<token & email> not found', 'warning')
+        return redirect(url_for('main.index'))
+    
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash('User not found', 'warning')
+        return redirect(url_for('main.index'))
+    
+    user = User.check_token(user, token)
+    
+    if not user:
         flash('That is an invalid or expired token', 'warning')
-        return redirect(url_for('auth.signin'))
+        return redirect(url_for('main.index'))
+
+    # Ensure token_type is present
+    if not hasattr(user, 'token_type'):
+        flash('Token type not found', 'warning')
+        print('Token type not found', 'warning')
+        return redirect(url_for('main.index'))
     
-    user = conf[0] 
-    type = conf[1]
-
-    if not user :
-        flash('Invalid/Expired Token', 'warning')
-        return redirect(url_for('main.welcome'))
-    
-    if type == 'verify' and user.verified == True:
-        flash(f'Weldone {user.username}, you have done this before now', 'success')
-        return redirect(url_for('auth.signin', _external=True))
-
-    if type == 'verify' and user.verified == False:
-        user.verified = True
-        db.session.commit()
-        flash(f'Weldone {user.username}, Your Email Address is Confirmed, Continue Here', 'success')
-        return redirect(url_for('auth.signin', _external=True))
-
-    if type == 'reset':
-        form = ResetForm() 
-        if form.validate_on_submit():
-            hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-            user.password = hashed_password
+    if user.token_type == 'confirm_email':
+        if user.verified:
+            flash(f'You have already verified your email address, {user.username}.', 'success')
+        else:
+            user.verified = True
             db.session.commit()
-            flash('Your password has been updated! Continue', 'success')
+            flash(f'Email address confirmed for {user.username}.', 'success')
+        return redirect(url_for('auth.signin'))
+
+    elif user.token_type == 'reset_password':
+        form = ResetForm()
+        if form.validate_on_submit():
+            user.password = user.set_password(form.password.data)
+            db.session.commit()
+            flash('Your password has been updated!', 'success')
             return redirect(url_for('auth.signin'))
+        
+        return render_template('reset_password.html', form=form)
+    
+    return redirect(url_for('main.index'))
+
+@auth.route("/confirm/<token>", methods=['GET', 'POST'])
+def confirm1(token: str):
+
+    if current_user.is_authenticated:
+        return redirect(url_for('main.index'))
+    
+    user = User.check_token(token)
+    print(user.token_type)
+    if not user:
+        flash('That is an invalid or expired token', 'warning')
+        print('That is an invalid or expired token', 'warning')
+        return redirect(url_for('main.index'))
+
+    # token_type = token_data["token_type"]
+    
+    if user.token_type == 'confirm_email':
+        if user.verified:
+            flash(f'You have already verified your email address, {user.username}.', 'success')
+        else:
+            user.verified = True
+            db.session.commit()
+            flash(f'Email address confirmed for {user.username}.', 'success')
+        return redirect(url_for('auth.signin'))
+
+    elif user.token_type == 'reset_password':
+        form = ResetForm()
+        if form.validate_on_submit():
+            # hashed_password = user.set_password(form.password.data)
+            user.password =  user.set_password(form.password.data)
+            db.session.commit()
+            flash('Your password has been updated!', 'success')
+            return redirect(url_for('auth.signin'))
+        
         return render_template('auth/reset.html', user=user, form=form)
+    
+    return redirect(url_for('main.index'))
 
 @auth.route('/notify')
 @login_required
@@ -165,111 +219,3 @@ def notify():
     notifications = current_user.notifications.filter(Notification.created > since).order_by(Notification.created.asc())
     return jsonify([{ 'name': n.name, 'data': n.get_data(), 'timestamp': n.created } for n in notifications])
 
-
-@auth.route("/test_tokens/<email>", methods=['GET', 'POST'])
-def test_tokens(email):
-    u = User.query.filter_by(email=email)
-    if u:
-        tk = u.generate_token(type='verify')
-        print(tk) #generate-token
-        #return redirect(url_for('main.welcome'))
-    conf = User.verify_token(tk) #verify
-
-    if not conf:
-        flash('That is an invalid or expired token', 'warning')
-        return redirect(url_for('auth.signin'))
-    
-    user = conf[0] 
-    type = conf[1]
-
-    if not user :
-        flash('Invalid/Expired Token', 'warning')
-        return redirect(url_for('main.welcome'))
-
-import socket
-socket.getaddrinfo('localhost', 5000)
-@auth.route('/test-mail/<email>')
-def testmail(email):
-    try:
-        msg = Message("TEST MAIL Subject",sender='jameschristo962@gmail.com', recipients=['jameschristo962@gmail.com'])
-        msg.body = "Mail body"
-        msg.html = "<h2>Email Heading</h2>\n<p>Email Body</p>"
-        print('')
-        mail.send(msg)
-        return 'successfully sent email'
-    except:
-        return 'failed-mail'
-
-
-
-import smtplib
-from socket import gaierror
-@auth.route('/t-mail')
-def sendm():
-    """     port = 465  
-    password = os.environ.get('EMAIL_PASSWORD')
-    context = ssl.create_default_context()
-
-    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
-        server.login("my@gmail.com", password) """
-    """     import urllib2
-
-    #proxy_support = urllib2.ProxyHandler({"http":"http://61.233.25.166:80"})
-    proxy_support = urllib2.ProxyHandler({"http":"http://localhost:5000"})
-    opener = urllib2.build_opener(proxy_support)
-    urllib2.install_opener(opener) """
-
-    import requests
-
-    import urllib.request
-    #htmlsource = urllib.request.FancyURLopener({"http":"http://127.0.0.1:5000"}).open(url).read().decode("utf-8")
-    # url = urllib.request.FancyURLopener({"http":"http://127.0.0.1:5000"}).open('https://smtp.gmail.com').read().decode("utf-8")
-    url = urllib.request.FancyURLopener({"http":"localhost:5000"}, timeout=0.1200).open('https://smtp.gmail.com').read().decode("utf-8")
-    print(url.encoding)
-    print(url.status_code)
-    r = requests.get("https://smtp.gmail.com", proxies={"http": "localhost:5000"})
-    #r = requests.get("https://smtp.gmail.com", proxies={"http": "127.0.0.1:5000"})
-    # r = requests.get("https://www.google.com", 
-    #                 proxies={"http": "localhost:5000"})
-    #r = requests.get('http://www.thepage.com', proxies={"http":"http://myproxy:3129"})
-    session = requests.session()
-    session.proxies = {}
-    session.proxies['http'] = 'socks5h://localhost:5000'
-    session.proxies['https'] = 'socks5h://localhost:5003'
-    r = session.get('https://google.com')
-
-    thedata = r.content
-    print(url)
-    # the first step is always the same: import all necessary components:
-    # import smtplib
-
-    # now you can play with your code. Let’s define the SMTP server separately here:
-    port = 5000 
-    #smtp_server = "smtp.gmail.com" or r
-    smtp_server = requests.get("https://smtp.gmail.com")
-    login = "jameschristo962@gmail.com" # paste your login generated by Mailtrap
-    password = "ckikkzvbbxdpgnub" # paste your password generated by Mailtrap
-    # specify the sender’s and receiver’s email addresses
-    sender = login
-    receiver = "techa.tech99@gmail.com"
-    # type your message: use two newlines (\n) to separate the subject from the message body, and use 'f' to  automatically insert variables in the text
-    message = f"""\
-    Subject: Hi Mailtrap
-    To: {receiver}
-    From: {sender}
-
-    This is my first message with Python."""
-
-    try:
-        #send your message with credentials specified above
-        with smtplib.SMTP(smtp_server, port) as server:
-            server.login(login, password)
-            server.sendmail(sender, receiver, message)
-        # tell the script to report if your message was sent or which errors need to be fixed 
-        print('Sent')
-    except (gaierror, ConnectionRefusedError):
-        print('Failed to connect to the server. Bad connection settings?')
-    except smtplib.SMTPServerDisconnected:
-        print('Failed to connect to the server. Wrong user/password?')
-    except smtplib.SMTPException as e:
-        print('SMTP error occurred: ' + str(e))

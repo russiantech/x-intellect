@@ -11,8 +11,8 @@
                         <h1 class="mb-0 pb-0 display-4"> {{course.title}}</h1>
                         <nav class="breadcrumb-container d-inline-block" aria-label="breadcrumb">
                             <ul class="breadcrumb pt-0">
-                                <li class="breadcrumb-item"><a href="{{url_for('main.user' if current_user.is_authenticated else 'main.welcome')}}">Home</a></li>
-                                <li class="breadcrumb-item"><a href="{{url_for('main.welcome')}}">Explore</a></li>
+                                <li class="breadcrumb-item"><a href="{{url_for('main.user' if current_user.is_authenticated else 'main.index')}}">Home</a></li>
+                                <li class="breadcrumb-item"><a href="{{url_for('main.index')}}">Explore</a></li>
                             </ul>
                         </nav>
                     </div>

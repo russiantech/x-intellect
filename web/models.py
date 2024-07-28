@@ -1,17 +1,19 @@
 
 #from itsdangerous.url_safe import TimedJSONWebSignatureSerializer as Serializer
-from sqlalchemy import or_
+import logging
 from sqlalchemy.ext.declarative import declarative_base
-import json , time 
-from datetime import datetime, timedelta
-from itsdangerous.url_safe import URLSafeTimedSerializer as Serializer
+import json 
+from datetime import datetime
+# from itsdangerous.url_safe import URLSafeTimedSerializer as Serializer, BadSignature, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer as Serializer
+from itsdangerous.exc import BadSignature, SignatureExpired
+
 #from itsdangerous import TimedSerializer as Serializer
-from flask_login import UserMixin, current_user
+from flask_login import UserMixin
 #from flask_security import RoleMixin
 from sqlalchemy.sql import func
 from flask import current_app
-import jwt
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from slugify import slugify
 #from web.chatme.routes import messages
 
@@ -176,22 +178,44 @@ class User(db.Model, UserMixin):
         n = Notification(name=name, payload_json=json.dumps(data), user=self)
         db.session.add(n)
         return n
+    
+    def set_password(self, password: str) -> None:
+        """Hashes the password using scrypt and stores it."""
+        self.password = generate_password_hash(password, method='scrypt')
 
-    #modified to specify types so that this single function can be used for different tokens
+    def check_password(self, password: str) -> bool:
+        from web.extensions import bcrypt
+        """Checks the hashed password using either bcrypt or scrypt."""
+        if self.password.startswith("$2b$"):  # bcrypt hash prefix
+            return bcrypt.check_password_hash(self.password, password)
+        return check_password_hash(self.password, password)
+    
+    #Single method can be used for different tokens
     # -> ['reset', 'verify', or 'confirm']
-    def generate_token(self, exp=600, type='reset'):
-        return jwt.encode({'user_id': self.id, 'exp': time.time() + exp, 'type': type }, current_app.config['SECRET_KEY'], algorithm='HS256')
-
+    def make_token(self, token_type: str = "reset_password") -> str:
+        """Generates a secure token for specified token type."""
+        serializer = Serializer(current_app.config["SECRET_KEY"])
+        return serializer.dumps({"user_email": self.email, "token_type": token_type}, salt=self.password)
+        
     @staticmethod
-    def verify_token(token):
+    def check_token(user: 'User', token: str) -> 'User':
+        serializer = Serializer(current_app.config["SECRET_KEY"])
         try:
-            user_id = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['user_id']
-            user = User.query.get(user_id)
-            type = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=['HS256'])['type']
-        except:
-            return
-        return user, type
-
+            token_data = serializer.loads(
+                token,
+                max_age=current_app.config["RESET_PASS_TOKEN_MAX_AGE"],
+                salt=user.password,
+            )
+                
+            if token_data["token_type"] in ["reset_password", "confirm_email"]:
+                user.token_type = token_data["token_type"]
+                return user
+            
+            return None
+        
+        except Exception as e:
+            return f"{e}"
+        
     def __repr__(self):
         return f"User('{self.name}', '{self.email}', '{self.image}')"
 

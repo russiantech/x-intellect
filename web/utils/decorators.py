@@ -34,7 +34,7 @@ def enrollment_required(func):
             # Retrieve the course object
             course = Course.query.filter(Course.slug == slug).first()
             if course is None:
-                return redirect(request.referrer or url_for('main.welcome'))  # Redirect to home page or course catalog
+                return redirect(request.referrer or url_for('main.index'))  # Redirect to home page or course catalog
 
             # Check if the current user is enrolled in the course
             enrollment = Enrollment.query.filter_by(user_id=current_user.id, course_id=course.id, deleted=False).first()
@@ -142,7 +142,7 @@ def enrollment_required_bak(func):
             # Retrieve the course object
             course = Course.query.filter(Course.slug == slug).first()
             if course is None:
-                return redirect(request.referrer or url_for('main.welcome'))  # Redirect to home page or course catalog
+                return redirect(request.referrer or url_for('main.index'))  # Redirect to home page or course catalog
 
             # Check if the current user is enrolled in the course
             enrollment = Enrollment.query.filter_by(user_id=current_user.id, course_id=course.id, deleted=False).first()

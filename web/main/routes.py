@@ -8,18 +8,17 @@ from web.utils.decorators import enrollment_required
 from web.utils.decorators import confirm_email
 
 from web.models import db, Brand, User, Course, Lesson, Topic, Enrollment
-from web.apis import course as test_course, user as test_user
+# from web.apis import course as test_course, user as test_user
 from web.editor.forms import duration_choice
 
 from web.extensions import mail
 
 main = Blueprint('main', __name__)
 
-#@main.route("/"), v->view
 @main.route('/explore')
 @main.route('/welcome/<int:offset>', methods=['post', 'get'])
 @main.route('/welcome', methods=['post', 'get'])
-def welcome(v=None):
+def index(v=None):
 
     page = request.args.get('page', 1, type=int)
 
@@ -79,11 +78,6 @@ def us():
     }
     return render_template('welcome/us.html', **context)
 
-""" @main.route("/")
-def us():
-    brand = Brand.query.filter_by(id=2).first()
-    return render_template('welcome/us.html', brand=brand, title='Intellect')
- """
  
 @main.route("/")
 @login_required
@@ -120,22 +114,10 @@ def user():
     progress_data = response_data
     #print(progress_data)
     context = {
-        'rater' :  test_course.rater, 
-        'progress': test_user.progress,
-        'badger' : test_user.badger, 
-        'badge' : test_user.badge, 
-        'time' : test_user.time, 
-        'recomend' : test_user.recomend,
         'progress_data': progress_data
     }
 
     return render_template('index.html', **context )
-
-@main.route('/explore')
-def explore():
-    course = Course.query.all()
-    brand = Brand.query.filter_by(id=2).first()
-    return render_template("courses/explore.html", brand=brand, course=course, data = course.courses)
 
 #-> Preview Here
 @main.route('/prev_/<string:slug>')

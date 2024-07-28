@@ -44,6 +44,7 @@ limiter = Limiter(
     key_func=lambda: request.remote_addr,
 )
  """
+ 
 from flask_caching import Cache
 from config import Config 
 #cache = Cache()
@@ -66,8 +67,8 @@ def make_available():
     app_socials = {}
 
     app_data = {
-        'app_name': 'Techa.',
-        'app_desc': 'Elite software developer with special interest in artificial intelligence & hacking.',
+        'app_name': 'Intellect . Techa',
+        'app_desc': 'Building a future where learning fits seamlessly into your everyday life.',
         'app_location': 'adesanya, lekki, lagos, nigeria.',
         'app_email': 'chrisjsmez@gmail.com',
         'app_logo': getenv('logo_url'),

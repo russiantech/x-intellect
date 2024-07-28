@@ -1,8 +1,8 @@
-from os import getenv, path
+from distutils.util import strtobool
+from os import getenv
 
 from dotenv import load_dotenv
-# Load environment variables from .env file
-load_dotenv()
+load_dotenv() # Load environment variables from .env file
 
 import logging
 LOGGING_FORMAT = "[%(asctime)s] [%(levelname)s] %(message)s"
@@ -24,6 +24,9 @@ class Config:
     ALLOWED_EXTENSIONS = ['txt', 'pdf', 'png', 'svg', 'jpg', 'jpeg', 'gif','mp4']
 
     LOG_TO_STDOUT = getenv('LOG_TO_STDOUT')
+    LOGGING_FORMAT = LOGGING_FORMAT
+    LOGGING_LEVEL = LOGGING_LEVEL
+    SQLALCHEMY_ECHO = False
 
     #SQLALCHEMY_DATABASE_URL = "mysql+mysqlconnector://root:@localhost:3306/empty" #mysql(no-password set, it's supposed to come after //root:)
     OAUTHLIB_INSECURE_TRANSPORT = True
@@ -41,6 +44,7 @@ class Config:
     SESSION_TYPE = 'redis' #//other-options('filesystem','mongodb') etc but'filesystem' is only suitable for small projects)
     #CACHE_TYPE = 'redis' #//other-options('simple', 'memcached', or 'filesystem')
     #CACHE_TYPE = 'simple' #//other-options('simple', 'memcached', or 'filesystem')
+
     REDIS_CONFIG = {
     'CACHE_TYPE': 'redis',
     'CACHE_KEY_PREFIX': 'server_1',
@@ -50,31 +54,38 @@ class Config:
     }
 
     #//MAIL
-    MAIL_USE_TLS = True
-    MAIL_USE_SSL = False
-    DEFAULT_MAIL_SENDER = getenv('DEFAULT_MAIL_SENDER') 
+    RESET_PASS_TOKEN_MAX_AGE = 3600  # Example value in seconds(30min)
     MAIL_MAX_EMAILS = None
     MAIL_SUPPRESS_SEND = False
     MAIL_ASCII_ATTACHMENTS = True
     ADMINS = ['sales@net.co', 'chrisjsmez@gmail.com']
+    #//
+    
+    MAIL_PORT = int(getenv('MAIL_PORT', 587))  # Ensure this is an integer
+    MAIL_USE_TLS = bool(strtobool(getenv('MAIL_USE_TLS', 'False'))) #ensure type is compatible to avoid Flask-Mail [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:1123)
+    MAIL_USE_SSL = bool(strtobool(getenv('MAIL_USE_SSL', 'False')))
+    # MAIL_USE_TLS = bool(getenv('MAIL_USE_TLS', True))
+    # MAIL_USE_SSL = bool(getenv('MAIL_USE_SSL', False))
+    DEFAULT_MAIL_SENDER = getenv('DEFAULT_MAIL_SENDER')
+    MAIL_SERVER = getenv('MAIL_SERVER')
+    MAIL_USERNAME = getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = getenv('MAIL_PASSWORD')
 
 class DevelopmentConfig(Config):
-    DEBUG = True
-    TESTING = True
     FLASK_ENV = 'development'
     FLASK_DEBUG = True
     FLASK_APP = 'app.py'
-    MAIL_DEBUG = True
-    DEFAULT_MAIL_SENDER = getenv('DEFAULT_MAIL_SENDER') 
-    DEFAULT_MAIL_TOKEN = getenv('mailtrap_token') 
-    MAIL_SERVER = getenv('mailtrap_server')
-    MAIL_PORT = getenv('mailtrap_port')
-    MAIL_USERNAME = getenv('mailtrap_username')
-    MAIL_PASSWORD = getenv('mailtrap_password')
+    
+    # Mail configurations
+    # MAIL_DEBUG = True
+    # DEFAULT_MAIL_TOKEN = getenv('mailtrap_token') 
+    # MAIL_SERVER = getenv('mailtrap_server')
+    # MAIL_PORT = getenv('mailtrap_port')
+    # MAIL_USERNAME = getenv('mailtrap_username')
+    # MAIL_PASSWORD = getenv('mailtrap_password')
+    
     SQLALCHEMY_DATABASE_URI = getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///')
     #SQLALCHEMY_ECHO = True
-    LOGGING_FORMAT = LOGGING_FORMAT
-    LOGGING_LEVEL = LOGGING_LEVEL
     #//SESSION_TYPE = 'filesystem'
 
 class ProductionConfig(Config):
@@ -82,16 +93,9 @@ class ProductionConfig(Config):
     TESTING = False
     FLASK_APP = 'passenger_wsgi.py'
     FLASK_ENV = 'production'
-    MAIL_DEBUG = False
-    DEFAULT_MAIL_SENDER = getenv('DEFAULT_MAIL_SENDER') 
-    MAIL_SERVER = getenv('mail_server')
-    MAIL_PORT = getenv('mail_port')
-    MAIL_USERNAME = getenv('mail_username')
-    MAIL_PASSWORD = getenv('mail_password')
+
     SQLALCHEMY_DATABASE_URI = getenv('SQLALCHEMY_DATABASE_URI_PROD', 'sqlite:///')
-    LOGGING_FORMAT = LOGGING_FORMAT
-    LOGGING_LEVEL = LOGGING_LEVEL
-    SQLALCHEMY_ECHO = False
+
     # Add production-specific settings here
     
     #prevents Shared Session Cookies #// so that other similar browsers would not have access to same first logged-in user account

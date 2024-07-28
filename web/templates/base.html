@@ -49,7 +49,7 @@
                 );
             }, 10000);
         });
-
+/*
     // load progress if user is logged in
     $(document).ready(function () {
         // Make AJAX request to fetch learning progress data
@@ -63,6 +63,10 @@
                 // Check if the response is an array
                 if (Array.isArray(response)) {
                     var userCourses = response;
+                    console.log(userCourses);
+                    
+                    // Initialize OverlayScrollbars
+                    // OverlayScrollbars(document.querySelectorAll('.scroll-by-count'), {});
 
                     var container = $('.scroll-by-count');
                     var courseCount = userCourses.length;
@@ -92,6 +96,7 @@
             }
         });
     });
+    */
     {% endif %}
 
 </script>
