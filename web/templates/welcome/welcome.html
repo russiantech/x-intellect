@@ -57,7 +57,7 @@
 
         <div class="row g-0">
             <div class="col-auto d-none d-lg-flex"><div class="nav flex-column sw-30 pe-7" id="menuColumn"></div> </div>
-            <div class="col" id="content_wrapper" style="height: 1200px; overflow-y: auto; padding: 10px; ">
+            <div class="col" id="content_wrapper" style="height: 1600px; overflow-y: auto; padding: 10px; ">
                 <div id="content_container" class="row g-3 row-cols-1 row-cols-md-2 row-cols-xl-3 row-cols-xxl-4 mb-5">
                     {% for c in course %}
                     <div id="content_" class="col content_">
@@ -73,7 +73,7 @@
                                 </h5>
                             </div>
                             <div class="card-footer border-0 pt-0">
-                                <div class="mb-2">
+                                <!-- <div class="mb-2">
                                     <div class="br-wrapper br-theme-cs-icon d-inline-block">
                                         <div class="br-wrapper">
                                             <select class="rating" name="rating" autocomplete="off" data-readonly="true"
@@ -87,7 +87,7 @@
                                         </div>
                                     </div>
                                     <div class="text-muted d-inline-block text-small align-text-top">({{c.rating or 0}})</div>
-                                </div>
+                                </div> -->
                                 <div class="card-text mb-0">
                                     <div class="text-muted text-overline text-small">
                                         <del>$ {{c.fee}} </del>

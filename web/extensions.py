@@ -23,6 +23,14 @@ moment = Moment()
 from flask_bcrypt import Bcrypt
 bcrypt = Bcrypt()
 
+from flask_cors import CORS
+cors = CORS()  # This will enable CORS for all routes
+# cors = CORS(app, resources={r"/api/*": {"origins": "http://localhost:5001"}})
+
+
+""" from flask_scrypt import Scrypt
+scrypt = Scrypt() """
+
 from flask_socketio import SocketIO
 socketio = SocketIO(manage_session=False, cors_allowed_origins="*")
 
@@ -101,9 +109,14 @@ def init_ext(app):
 
     migrate.init_app(app, db)
 
+    cors.init_app(app)
+
     csrf.init_app(app)
     #f_session.init_app(app) #enable this on cpanel for file-session type, good alternative is redis-server instead.
     bcrypt.init_app(app)
+
+    # scrypt.init_app(app)
+
     # s_manager.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
@@ -127,6 +140,7 @@ def confiq_app(app, config_name):
 
     if config_name == 'production':
         app.config.from_object('config.ProductionConfig')
+        
     elif config_name == 'development':
         app.config.from_object('config.DevelopmentConfig')
     

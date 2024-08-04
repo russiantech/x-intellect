@@ -1,17 +1,9 @@
-import logging
-from flask import abort, current_app, flash, jsonify, render_template, Blueprint, request, url_for
+from flask import jsonify, render_template, Blueprint, request, url_for
 from flask_login import current_user, login_required
 
-from slugify import slugify
-from sqlalchemy import asc, desc
 from web.utils.decorators import enrollment_required
-from web.utils.decorators import confirm_email
 
-from web.models import db, Brand, User, Course, Lesson, Topic, Enrollment
-# from web.apis import course as test_course, user as test_user
-from web.editor.forms import duration_choice
-
-from web.extensions import mail
+from web.models import db, Brand, User, Course, Topic, Enrollment
 
 main = Blueprint('main', __name__)
 
@@ -52,7 +44,7 @@ def index(v=None):
             course = Course.query.order_by(Course.id.asc()).offset(5).all()
         case _:
             all = Course.query.all()
-            course = all[0 : 4]
+            course = all[0 : 16 ]
             total = len(all)
         
     brand = Brand.query.filter_by(id=2).first()
@@ -61,7 +53,7 @@ def index(v=None):
         'brand': brand, 
         'course': course, 
         'total' : total,
-        'time' : duration_choice }
+        'time' : "duration_choice" }
 
     return render_template("welcome/welcome.html", **context)
 
@@ -77,6 +69,19 @@ def us():
         "support_interval" : support_interval, 
     }
     return render_template('welcome/us.html', **context)
+
+@main.route("/us-x")
+def us_x():
+    brand = Brand.query.filter_by(id=2).first()
+    support_amount = "30, 40, 50, 70, 80, 90, 100, 200, 300, 400, 500"
+    support_interval = "daily, weekly, monthly, quarterly, yearly"
+    context = {
+        "brand":brand, 
+        "title" :'Us . Intellect',
+        "support_amount" : support_amount, 
+        "support_interval" : support_interval, 
+    }
+    return render_template('welcome/us_x.html', **context)
 
  
 @main.route("/")

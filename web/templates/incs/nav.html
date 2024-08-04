@@ -43,7 +43,7 @@
                     <div class="col-6 ps-1 pe-1">
                         <ul class="list-unstyled">
                             <li>
-                                <a href="{{url_for('auth.update', usrname=current_user.username)}}">
+                                <a href="{{url_for('auth.update', username=current_user.username)}}">
                                     <i data-acorn-icon="user" class="me-2" data-acorn-size="17"></i>
                                     <span class="align-middle">{{current_user.username}}</span>
                                 </a>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-6 pe-1 ps-1">
                         <ul class="list-unstyled isDisabled">
-                            <a href="{{url_for('auth.update', usrname=current_user.username)}}">
+                            <a href="{{url_for('auth.update', username=current_user.username)}}">
                                 <i data-acorn-icon="heart" class="me-2" data-acorn-size="17"></i>
                                 <span class="align-middle">Saved</span>
                             </a>
@@ -60,7 +60,7 @@
                     </div>
                     <div class="col-6 pe-1 ps-1">
                         <ul class="list-unstyled">
-                            <a href="{{url_for('auth.update', usrname=current_user.username)}}">
+                            <a href="{{url_for('auth.update', username=current_user.username)}}">
                                 <i data-acorn-icon="gear" class="me-2" data-acorn-size="17"></i>
                                 <span class="align-middle">Settings</span>
                             </a>

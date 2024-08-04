@@ -460,7 +460,7 @@
                 <div class="card h-100-card sw-xxl-100">
                     <div class="card-body row g-0">
 
-                        {#<div class="container">
+                        <div class="container">
                             <form id="payment-form" action="/submit-payment" method="POST">
                                 <div class="row">
                                     <!-- Predefined Amounts -->
@@ -488,28 +488,42 @@
                                     </div>
                                 </div>
                             </form>
-                        </div> #}
+                        </div>
 
                         
-                    <div class="col-12 col-xl-8" id="s_payment">
+                        {#<div class="col-12 col-xl-8" id="s_payment">
+                            <div class="text-warning">Select or enter amount</div>
                             
+                            {% for amount in support_amount.split(',') %}
+                            <button 
+                                class="btn btn-sm btn-icon btn-icon-end btn-outline-primary mb-3 me-1 amount-btn"
+                                data-amount="{{amount}}"
+                                type="button">
+                                $<span>{{amount}}</span>
+                            </button>
+                            {% endfor %}
+
+                            
+                            {% for amount in support_amount.split(',') %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" name="selected_amount" type="radio" id="selected_amount" value="{{amount}}">
+                                <label class="form-check-label" for="amount-{{amount}}">${{amount}}</label>
+                            </div>
+                            {% endfor %}
+
+                             {% for amount in support_amount.split(',') %}
+                            <button id="selected_amount1" class="btn btn-sm btn-icon btn-icon-end btn-outline-primary btn-outline-white mb-3 me-1"
+                                type="button">
+                                $<span>{{amount}}</span>
+                            </button>
+                            {% endfor %} 
+
                             <form method="post" id="payment-form" action="{{url_for('pay.support_pay')}}">
 
-                                <label for="predefined-amounts" class="form-label">Select an Amount:</label>
-                                        <div id="predefined-amounts">
-                                            {% for amount in support_amount.split(',') %}
-                                            <button class="btn btn-sm btn-icon btn-icon-end btn-outline-primary mb-3 me-1 amount-btn" 
-                                                    data-amount="{{ amount }}" type="button">
-                                                $<span>{{ amount }}</span>
-                                            </button>
-                                            {% endfor %}
-                                        </div>
-
-                                <!-- Custom Amount Input -->
                                 <div class="mb-3 filled">
                                     <i class="acorn-icons acorn-icons-help undefined"></i>
                                     <i data-acorn-icon="wallet"></i>
-                                    <input type="number" name="amount" id="amount" min="1" required class="form-control" placeholder="enter amount to pay">
+                                    <input type="number" name="amount" id="amount" required class="form-control" placeholder="enter amount to pay">
                                 </div>
 
                                 <!--<div class="row g-3">-->
@@ -545,19 +559,17 @@
                                     </div>
                                 </div>
 
-                                <div class="text-warning"> Thanks for making this dream a reality..!!!</div>
-
-                                <div id="response-message" class="mt-3"></div>
-                                
+                                <div class="text-warning">
+                                    Thanks for making this dream a reality..!!!</div>
                                 <button id="submit-payment" class="btn btn-icon btn-icon-start btn-primary mt-3 mb-4">
                                    <i data-acorn-icon="chevron-right"></i>
                                     <span>Support Now</span>
                                 </button>
 
                             </form>
+                            <div id="response-message" class="mt-3"></div>
 
-                        </div> 
-
+                        </div> #}
                         <div class="col-12 col-xl-4">
                             <img src="{{url_for('static', filename='./img/course/choose5cb9.jpg')}}" alt="paysafe"
                                 class="img-fluid rounded m-2">
@@ -628,10 +640,10 @@
 </script>
 
 <script>
-// Highlight selected amount and update the input field
+    // Highlight selected amount and update the hidden input
 document.querySelectorAll('.amount-btn').forEach(function(button) {
     button.addEventListener('click', function() {
-        // Remove highlight from all buttons and revert to primary
+        // Remove the highlight from all buttons and revert to primary
         document.querySelectorAll('.amount-btn').forEach(function(btn) {
             btn.classList.remove('btn-outline-white');
             btn.classList.add('btn-outline-primary');
@@ -644,13 +656,14 @@ document.querySelectorAll('.amount-btn').forEach(function(button) {
         // Set the selected amount
         const selectedAmount = button.getAttribute('data-amount').trim();
         document.getElementById('amount').value = selectedAmount;
+        document.getElementById('selected-amount').value = selectedAmount;
     });
 });
 
 // Handle custom amount input
 document.getElementById('amount').addEventListener('input', function() {
     const customAmount = this.value.trim();
-    document.getElementById('amount').value = customAmount;
+    document.getElementById('selected-amount').value = customAmount;
 
     // Remove the highlight from all buttons when custom amount is typed
     document.querySelectorAll('.amount-btn').forEach(function(btn) {
@@ -660,44 +673,26 @@ document.getElementById('amount').addEventListener('input', function() {
 });
 
 // Handle form submission
-document.getElementById('submit-payment').addEventListener('click', function(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    // add spinner
-    const submitButton = this;
-    submitButton.disabled = true; // Disable the button
-    submitButton.innerHTML = 'Processing... <span class="spinner-border spinner-border-sm"></span>'; // Add spinner
-
+document.getElementById('submit-payment').addEventListener('click', function() {
     const form = document.getElementById('payment-form');
     const formData = new FormData(form);
-  // Log form data entries
-  for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-    }
-    console.log(form.action)
+
     fetch(form.action, {
         method: 'POST',
         body: formData
     })
-    .then( response => response.json())
+    .then(response => response.json())
     .then(data => {
         if (data.success) {
-            document.getElementById('response-message').innerHTML = `<div class="alert alert-success"> ${data.message}</div>`;
             window.location.href = data.redirect_url; // Redirect on success
         } else {
-            // alert(data.error || 'Something went wrong. Please try again.');
-            document.getElementById('response-message').innerHTML = `<div class="alert alert-danger"> -> ${data.error}</div>`;
+            alert(data.error || 'Something went wrong. Please try again.');
         }
     })
-
-    .catch(error => console.error('Error:', error))
-
-    .finally(() => {
-        submitButton.disabled = false; // Re-enable the button
-        submitButton.innerHTML = 'Submit Payment'; // Reset button text
-    });
+    .catch(error => console.error('Error:', error));
 });
 
+    
     </script>
 {% endblock page_js %}
 

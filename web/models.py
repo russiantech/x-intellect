@@ -1,22 +1,16 @@
 
-#from itsdangerous.url_safe import TimedJSONWebSignatureSerializer as Serializer
-import logging
 from sqlalchemy.ext.declarative import declarative_base
 import json 
 from datetime import datetime
-# from itsdangerous.url_safe import URLSafeTimedSerializer as Serializer, BadSignature, SignatureExpired
 from itsdangerous import URLSafeTimedSerializer as Serializer
-from itsdangerous.exc import BadSignature, SignatureExpired
 
-#from itsdangerous import TimedSerializer as Serializer
 from flask_login import UserMixin
 #from flask_security import RoleMixin
 from sqlalchemy.sql import func
 from flask import current_app
-from werkzeug.security import generate_password_hash, check_password_hash
+# from werkzeug.security import generate_password_hash, check_password_hash
 from slugify import slugify
 #from web.chatme.routes import messages
-
 # from web import db, s_manager
 
 Base = declarative_base()
@@ -109,6 +103,7 @@ class User(db.Model, UserMixin):
     city = db.Column(db.String(50))
     lang = db.Column(db.String(100))
     about = db.Column(db.String(5000))
+    src= db.Column(db.String(50))
     socials = db.Column(db.JSON) # socials: { 'fb': '@chrisjsm', 'insta': '@chris', 'twit': '@chris','linkedin': '', 'whats':'@techa' }
     #type = db.Column(db.Enum('0', '1', '2'), default='2')  # ['admin','tutor','student']
     # instructors
@@ -120,7 +115,6 @@ class User(db.Model, UserMixin):
     ratings = db.Column(db.Integer)
     reviews = db.Column(db.Integer)
     # students
-
     ip = db.Column(db.String(50))
     verified = db.Column(db.Boolean(), default=False)  # verified or not(users)
     graduated = db.Column(db.Boolean(), default=False)
@@ -179,16 +173,21 @@ class User(db.Model, UserMixin):
         db.session.add(n)
         return n
     
+    # from web.extensions import bcrypt
+    bcrypt = __import__('web.extensions', fromlist=['bcrypt']).bcrypt # fromlist=['bcrypt'] tells __import__ that you are specifically interested in importing bcrypt from the web.extensions module.
+    # bcrypt = __import__('web.extensions').bcrypt
+
     def set_password(self, password: str) -> None:
-        """Hashes the password using scrypt and stores it."""
-        self.password = generate_password_hash(password, method='scrypt')
+        """Hashes the password using bcrypt and stores it."""
+        if not password:
+            raise ValueError("Password cannot be empty")
+        self.password = self.bcrypt.generate_password_hash(password).decode('utf-8')
 
     def check_password(self, password: str) -> bool:
-        from web.extensions import bcrypt
-        """Checks the hashed password using either bcrypt or scrypt."""
-        if self.password.startswith("$2b$"):  # bcrypt hash prefix
-            return bcrypt.check_password_hash(self.password, password)
-        return check_password_hash(self.password, password)
+        """Checks the hashed password using bcrypt."""
+        if not password:
+            return False
+        return self.bcrypt.check_password_hash(self.password, password)
     
     #Single method can be used for different tokens
     # -> ['reset', 'verify', or 'confirm']
@@ -199,6 +198,7 @@ class User(db.Model, UserMixin):
         
     @staticmethod
     def check_token(user: 'User', token: str) -> 'User':
+        from itsdangerous import BadSignature, SignatureExpired
         serializer = Serializer(current_app.config["SECRET_KEY"])
         try:
             token_data = serializer.loads(
@@ -213,8 +213,13 @@ class User(db.Model, UserMixin):
             
             return None
         
+        except SignatureExpired:
+            return "Token has expired. Please request a new one."
+        except BadSignature:
+            return "Invalid token. Please request a new one."
         except Exception as e:
-            return f"{e}"
+            return str(e)
+
         
     def __repr__(self):
         return f"User('{self.name}', '{self.email}', '{self.image}')"
@@ -389,39 +394,6 @@ class Course(db.Model):
 
         return data
 
-    def serialize_bak(self, include_lessons=False, include_topics=False, include_topic_desc=False, current_user=None):
-        """Serialize the Course object by dynamically accessing the specified attributes."""
-        try:
-            included_only = ['id', 'category_id', 'image', 'title', 'comment', 'rating', 'fee', 'level', 'rating', 'views', 'duration', 'created', 'slug']
-            data = {x: getattr(self, x) for x in included_only}
-            data['desc'] = json.loads(self.desc) if self.desc else None
-
-            # Check if lessons should be included
-            if include_lessons:
-                # Fetch lessons related to the course
-                lessons = [lesson.serialize() for lesson in self.lessons]
-                data['lessons'] = lessons
-                data['lessons_count'] = len(lessons)
-
-                # Check if topics should be included
-                if include_topics:
-                    # Fetch topics related to each lesson
-                    for lesson in lessons:
-                        if 'topics' in lesson and isinstance(lesson['topics'], list) and lesson['topics'] is not None:
-                            topics = [topic.serialize() for topic in lesson['topics'] if topic.lesson_id == lesson['id']]
-                            lesson['topics'] = topics
-
-            # Check if current_user is provided and add is_enrolled field
-            if current_user:
-                enrollment = Enrollment.query.filter_by(user_id=current_user.id, course_id=self.id).first()
-                payment = Payment.query.filter_by(user_id=current_user.id, course_id=self.id, tx_status='successful').first()
-                data['is_enrolled'] = enrollment is not None and payment is not None
-
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            data['desc'] = None
-
-        return data
 
 class Lesson(db.Model):
     __tablename__ = 'lesson'
@@ -464,7 +436,7 @@ class Lesson(db.Model):
         return data
 
         
-    #DON'T FORET backref 'course' from Course Model when inserting data, even for all others
+#DON'T FORET backref 'course' from Course Model when inserting data, even for all others
 
 class Topic(db.Model):
     __tablename__ = 'topic'

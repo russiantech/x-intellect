@@ -66,10 +66,16 @@ class Config:
     MAIL_USE_SSL = bool(strtobool(getenv('MAIL_USE_SSL', 'False')))
     # MAIL_USE_TLS = bool(getenv('MAIL_USE_TLS', True))
     # MAIL_USE_SSL = bool(getenv('MAIL_USE_SSL', False))
-    DEFAULT_MAIL_SENDER = getenv('DEFAULT_MAIL_SENDER')
+    # DEFAULT_MAIL_SENDER = getenv('DEFAULT_MAIL_SENDER')
+    DEFAULT_MAIL_SENDER = ('Intellect', getenv('DEFAULT_MAIL_SENDER') ) 
     MAIL_SERVER = getenv('MAIL_SERVER')
     MAIL_USERNAME = getenv('MAIL_USERNAME')
     MAIL_PASSWORD = getenv('MAIL_PASSWORD')
+    
+    """ Mailtrap API """
+    MAILTRAP_API_KEY = getenv('MAILTRAP_API_KEY')
+    MAILTRAP_API_TOKEN = getenv('MAILTRAP_API_TOKEN')
+    MAILTRAP_INBOX_ID = getenv('MAILTRAP_INBOX_ID')
 
 class DevelopmentConfig(Config):
     FLASK_ENV = 'development'
@@ -85,6 +91,7 @@ class DevelopmentConfig(Config):
     # MAIL_PASSWORD = getenv('mailtrap_password')
     
     SQLALCHEMY_DATABASE_URI = getenv('SQLALCHEMY_DATABASE_URI', 'sqlite:///')
+    RAVE_SECRET_KEY = getenv('RAVE_TEST_SECRET_KEY')
     #SQLALCHEMY_ECHO = True
     #//SESSION_TYPE = 'filesystem'
 
@@ -95,6 +102,7 @@ class ProductionConfig(Config):
     FLASK_ENV = 'production'
 
     SQLALCHEMY_DATABASE_URI = getenv('SQLALCHEMY_DATABASE_URI_PROD', 'sqlite:///')
+    RAVE_SECRET_KEY = getenv('RAVE_LIVE_SECRET_KEY')
 
     # Add production-specific settings here
     

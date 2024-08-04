@@ -51,6 +51,7 @@
 
                             <div class="mb-5">
                                 <h2 class="cta-1 text-primary">I'm new here, <a href="{{url_for('auth.signup')}}" class="text-muted">Get Started</a> .</h2>
+                                <p class="mb-6">Techa empowers people & powers businesseses</p>
                             </div>
                             <div>
                                 <form class="tooltip-end-bottom" method="post" action="">
@@ -85,6 +86,12 @@
                                     </div>
                                     {{ form.submit(class="btn btn-lg col-md-12 btn-primary") }}
                                 </form>
+
+                                <div class="d-flex justify-content-end align-items-center mt-3">
+                                    <a href="{{url_for('auth.oauth2_authorize', provider='google')}}" type="button" class="btn-icon btn-icon-end btn btn-primary"><span>Use Gooogle Signin</span> 
+                                        <i data-acorn-icon="chevron-right" class="text-white" data-acorn-size="20"></i>
+                                    </a>
+                                </div>
 
                             </div>
                         </div>
